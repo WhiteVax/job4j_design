@@ -23,7 +23,7 @@ public class EvenNumbersIterator implements Iterator<Integer> {
         while (data.length > index && data[index] % 2 != 0) {
             index++;
         }
-        return data.length > index && data[index] % 2 == 0;
+        return data.length > index;
     }
 
     @Override

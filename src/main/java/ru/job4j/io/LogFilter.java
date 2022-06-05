@@ -9,7 +9,7 @@ public class LogFilter {
     public List<String> filter(String file) {
         List<String> list = new ArrayList<>();
         try (var reader = new BufferedReader(new FileReader(file))) {
-            list = reader.lines().filter(e -> e.contains("404 1"))
+            list = reader.lines().filter(e -> e.matches(".*\\s404\\s\\d*"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
@@ -21,6 +21,6 @@ public class LogFilter {
         var logFilter = new LogFilter();
         List<String> log = logFilter.filter("C:\\projects"
                 + "\\job4j_design\\src\\main\\java\\ru\\job4j\\io\\log.txt");
-        log.forEach(System.out ::println);
+        log.forEach(System.out::println);
     }
 }

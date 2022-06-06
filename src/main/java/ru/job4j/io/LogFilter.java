@@ -17,10 +17,24 @@ public class LogFilter {
         return list;
     }
 
+    public void save(List<String> log, String file) {
+        try (PrintWriter out = new PrintWriter(
+                new BufferedOutputStream(
+                        new FileOutputStream(file)
+                )
+        )) {
+            log.forEach(out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         var logFilter = new LogFilter();
         List<String> log = logFilter.filter("C:\\projects"
                 + "\\job4j_design\\src\\main\\java\\ru\\job4j\\io\\log.txt");
         log.forEach(System.out::println);
+        logFilter.save(log, "C:\\projects"
+                + "\\job4j_design\\src\\main\\java\\ru\\job4j\\io\\404.txt");
     }
 }

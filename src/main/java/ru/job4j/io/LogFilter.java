@@ -9,7 +9,7 @@ public class LogFilter {
     public List<String> filter(String file) {
         List<String> list = new ArrayList<>();
         try (var reader = new BufferedReader(new FileReader(file))) {
-            list = reader.lines().filter(e -> e.matches(".*\\s404\\s\\d*"))
+            list = reader.lines().filter(e -> e.matches("^.+\\s404\\s.+"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,7 +8,7 @@ import java.util.*;
 public class Config {
 
     private final String path;
-    private final HashMap<String, String> values = new HashMap<String, String>();
+    private final HashMap<String, String> values = new HashMap<>();
 
     public Config(final String path) {
         this.path = path;
@@ -17,9 +17,9 @@ public class Config {
     public void load() {
         try (var reader = new BufferedReader(new FileReader(this.path))) {
             reader.lines()
-                    .filter(e -> e.contains("="))
+                    .filter(e -> e.matches("^#+") || e.contains("="))
                     .forEach(e -> {
-                        String[] s = e.split("=");
+                        String[] s = e.split("=", 2);
                         if (s.length != 2 || s[0].isEmpty() || s[1].isEmpty()) {
                             throw new IllegalArgumentException();
                         }

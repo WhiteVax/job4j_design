@@ -4,6 +4,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 
 public class ConfigTest {
 
@@ -29,6 +30,6 @@ public class ConfigTest {
         var config = new Config(path);
         config.load();
         assertThat(config.value("hibernate.connection.username"), is("postgres=name"));
-        assertThat(config.value("# PostgresSQL hibernate.dialect"), is("org.hibernate.dialect.PostgreSQLDialect"));
+        assertThat(config.value("# PostgresSQL hibernate.dialect"), is(nullValue()));
     }
 }

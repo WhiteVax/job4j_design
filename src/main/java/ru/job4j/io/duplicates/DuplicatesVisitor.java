@@ -5,31 +5,34 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DuplicatesVisitor extends SimpleFileVisitor<Path> {
 
-    private final Map<FileProperty, String> files = new HashMap<>();
-    private final Set<FileProperty> duplicates = new HashSet<>();
+    private final Map<FileProperty, List<Path>> files = new HashMap<>();
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        var fileProperty = new FileProperty(files.size(), file.getFileName().toAbsolutePath().toString());
+        var fileProperty = new FileProperty(file.toFile().length(), file.toFile().getName());
         if (files.containsKey(fileProperty)) {
-            duplicates.add(fileProperty);
+            List<Path> list = files.get(fileProperty);
+            list.add(file);
+        } else {
+            List<Path> list = new ArrayList<>();
+            list.add(file);
+            files.put(fileProperty, list);
         }
-        files.putIfAbsent(fileProperty, fileProperty.getName());
         return super.visitFile(file, attrs);
     }
 
-    public void  printDuplicates() {
-        if (duplicates.isEmpty()) {
-            System.out.println("Not found duplicates.");
+    public void printDuplicates() {
+        if (files.isEmpty() || files.values().stream().noneMatch(e -> e.size() > 1)) {
+            System.out.println("Not found duplicates!");
         } else {
-            duplicates.forEach(e -> System.out.println(e.getName()));
+            files.values()
+                    .stream()
+                    .filter(paths -> paths.size() > 1)
+                    .forEach(e -> e.forEach(l -> System.out.println(l.toFile().getAbsoluteFile())));
         }
     }
 }

@@ -2,7 +2,6 @@ package ru.job4j.io;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ArgsName {
 
@@ -16,29 +15,35 @@ public class ArgsName {
     }
 
     private void parse(String[] args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("Empty args.");
-        }
+        validate(args);
         for (var line : args) {
             String[] word = line.split("=", 2);
-            if (Objects.equals(word[0], "") || Objects.equals(word[1], "")) {
-                throw new IllegalArgumentException(String.format("Wrong format %s.", line));
-            }
             values.putIfAbsent(word[0].replace("-", ""), word[1].replace("-", ""));
         }
     }
 
+    private void validate(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Empty args.");
+        }
+        for (var line : args) {
+            if (!line.matches("(-{1}.+={1}.+)")) {
+                throw new IllegalArgumentException(String.format("Wrong format %s.", line));
+            }
+        }
+    }
+
     public static ArgsName of(String[] args) {
-        ArgsName names = new ArgsName();
+        var names = new ArgsName();
         names.parse(args);
         return names;
     }
 
     public static void main(String[] args) {
-        ArgsName jvm = ArgsName.of(new String[]{"-Xmx=512", "-encoding=UTF-8"});
+        var jvm = ArgsName.of(new String[]{"-Xmx=512", "-encoding=UTF-8"});
         System.out.println(jvm.get("Xmx"));
 
-        ArgsName zip = ArgsName.of(new String[]{"-out=project.zip", "-encoding=UTF-8"});
+        var zip = ArgsName.of(new String[]{"-out=project.zip", "-encoding=UTF-8"});
         System.out.println(zip.get("out"));
     }
 }

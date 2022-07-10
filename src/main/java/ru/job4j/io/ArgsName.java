@@ -18,7 +18,7 @@ public class ArgsName {
         for (var line : args) {
             validate(line);
             String[] word = line.split("=", 2);
-            values.putIfAbsent(word[0].replace("-", ""), word[1].replace("-", ""));
+            values.putIfAbsent(word[0].substring(1), word[1]);
         }
     }
 

@@ -15,25 +15,23 @@ public class ArgsName {
     }
 
     private void parse(String[] args) {
-        validate(args);
         for (var line : args) {
+            validate(line);
             String[] word = line.split("=", 2);
             values.putIfAbsent(word[0].replace("-", ""), word[1].replace("-", ""));
         }
     }
 
-    private void validate(String[] args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("Empty args.");
-        }
-        for (var line : args) {
-            if (!line.matches("(-{1}.+={1}.+)")) {
-                throw new IllegalArgumentException(String.format("Wrong format %s.", line));
-            }
+    private void validate(String line) {
+        if (!line.matches("(-{1}.+={1}.+)")) {
+            throw new IllegalArgumentException(String.format("Wrong format %s.", line));
         }
     }
 
     public static ArgsName of(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Empty args.");
+        }
         var names = new ArgsName();
         names.parse(args);
         return names;

@@ -1,6 +1,7 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,22 +34,22 @@ public class Zip {
         return list;
     }
 
-    private void checkValidate(String[] args) {
+    private void checkValidate(String[] args, ArgsName argName) {
         if (args.length != 3) {
             throw new IllegalArgumentException(String.format("Wrong count args %s.", Arrays.toString(args)));
-        } else if (!args[0].matches("(^-d=[a-zA-Z]{1}:\\\\.*)")) {
+        } else if (!Files.isDirectory(Path.of(argName.get("d")))) {
             throw new IllegalArgumentException(String.format("Wrong arg -d %s.", args[0]));
-        } else if (!args[1].matches("(^-e=\\*.\\w+)")) {
+        } else if (!Files.exists(Path.of(argName.get("e").substring(1, 1)))) {
             throw new IllegalArgumentException(String.format("Wrong arg -e %s", args[1]));
-        } else if (!args[2].matches("(^-o={1}\\w+.*.zip)")) {
+        } else if (!Files.exists(Path.of(argName.get("o")))) {
             throw new IllegalArgumentException(String.format("Wrong arg -o %s", args[2]));
         }
     }
 
     public static void main(String[] args) {
         var zip = new Zip();
-        zip.checkValidate(args);
         var arg = ArgsName.of(args);
+        zip.checkValidate(args, arg);
         zip.packFiles(zip.convertToList(arg.get("d"), arg.get("e")), new File(arg.get("o")));
     }
 }

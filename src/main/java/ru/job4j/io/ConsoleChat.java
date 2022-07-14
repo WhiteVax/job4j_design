@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,11 +39,11 @@ public class ConsoleChat {
         while (scanner.hasNext()) {
             var answer = scanner.nextLine();
             log.add(answer);
-            if (answer.equals(CONTINUE)) {
+            if (CONTINUE.equals(answer)) {
                 botWork = true;
-            } else if (answer.equals(STOP)) {
+            } else if (STOP.equals(answer)) {
                 botWork = false;
-            } else if (answer.equals(OUT)) {
+            } else if (OUT.equals(answer)) {
                 saveLog(log);
                 return;
             }
@@ -59,7 +58,7 @@ public class ConsoleChat {
     private List<String> readPhrases() {
         List<String> list = new ArrayList<>();
         try {
-            list = Files.readAllLines(Path.of(botAnswers), Charset.defaultCharset());
+            list = Files.readAllLines(Path.of(botAnswers), StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }

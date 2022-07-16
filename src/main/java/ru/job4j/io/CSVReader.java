@@ -1,13 +1,13 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CSVReader {
+    private Map<String, Integer> tableHeader = new HashMap<>();
     private final List<String[]> list = new ArrayList<>();
     private final List<String> filter = new ArrayList<>();
 
@@ -25,7 +25,11 @@ public class CSVReader {
 
     public void handle(ArgsName arg) {
         validate(arg);
-        try (var scanner = new Scanner(new FileInputStream(arg.get("path")))) {
+        try (var scanner = new Scanner(new FileReader(arg.get("path"), StandardCharsets.UTF_8))) {
+            int i = 0;
+            for (var el : scanner.nextLine().split(arg.get("delimiter"))) {
+                tableHeader.put(el, i++);
+            }
             while (scanner.hasNext()) {
                 list.add(scanner.nextLine().split(arg.get("delimiter")));
             }
@@ -56,8 +60,22 @@ public class CSVReader {
     }
 
     public void filter(String arg) {
-        if ("name,age".equals(arg)) {
-            list.forEach(e -> filter.add(String.format("%s;%s", e[0], e[1])));
+        List<Integer> index = new ArrayList<>();
+        for (var el : arg.split(",")) {
+            if (tableHeader.containsKey(el)) {
+                index.add(tableHeader.get(el));
+            }
+        }
+        filter.add(arg.replace(",", ";"));
+        for (var el: list) {
+            var builder = new StringBuilder();
+            for (var  pointer : index) {
+                builder.append(el[pointer]);
+                    if (pointer != index.size() - 1) {
+                        builder.append(";");
+                    }
+            }
+           filter.add(builder.toString());
         }
     }
 

@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CSVReader {
-    static List<String> list = new ArrayList<>();
+    private final List<String[]> list = new ArrayList<>();
+    private final List<String> filter = new ArrayList<>();
 
     private static void validate(ArgsName argsName) {
         if (!Files.exists(Path.of(argsName.get("path")))) {
@@ -24,23 +25,20 @@ public class CSVReader {
 
     public void handle(ArgsName arg) {
         validate(arg);
-        try (var scanner = new Scanner(new FileInputStream(arg.get("path")))
-                .useDelimiter(arg.get("delimiter"))) {
+        try (var scanner = new Scanner(new FileInputStream(arg.get("path")))) {
             while (scanner.hasNext()) {
-                if ("name,age".equals(arg.get("filter"))) {
-                    list.add(String.format(("%s;%s"), scanner.next(), scanner.next()));
-                    scanner.nextLine();
-                }
+                list.add(scanner.nextLine().split(arg.get("delimiter")));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        filter(arg.get("filter"));
         out(arg.get("out"));
     }
 
     public void out(String arg) {
         if ("stdout".equals(arg)) {
-            list.forEach(System.out::println);
+            filter.forEach(System.out::println);
         } else if (Files.exists(Path.of(arg))) {
             saveFile(arg);
         }
@@ -48,12 +46,18 @@ public class CSVReader {
 
     public void saveFile(String target) {
         try (var file = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
-            list.forEach(e -> {
+            filter.forEach(e -> {
                 file.write(e);
                 file.write(System.lineSeparator());
             });
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void filter(String arg) {
+        if ("name,age".equals(arg)) {
+            list.forEach(e -> filter.add(String.format("%s;%s", e[0], e[1])));
         }
     }
 

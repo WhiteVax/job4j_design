@@ -14,15 +14,15 @@ public class UsageLog4j {
         LOG.warn("warn message");
         LOG.error("error message");
 
-        var name = "Vlad";
-        var surname = "Bedenko";
-        int age = 18;
-        var education = "University ...";
-        var degreeUniversity = "master";
-        var city = "Kyiv";
-        var birthday = "march";
-        var profession = "engineer";
-        LOG.debug("User info name : {}, surname : {}, age : {}, education : {}, degree : {}, city : {}, birthday : {},profession : {}.",
-        name, surname, age, education, degreeUniversity, city, birthday, profession);
+        byte count = 5;
+        short counter = 10000;
+        int cities = 18;
+        long distance = 10_000_000L;
+        float percent = 0.76F;
+        double miles = 13.3;
+        char typeVehicle = 'C';
+        boolean road = true;
+        LOG.debug("Vehicle info count : {}, counter : {}, cities : {}, distance : {}, percent : {}, miles : {}, typeVehicle : {}, road : {}.",
+        count, counter, cities, distance, percent, miles, typeVehicle, road);
     }
 }

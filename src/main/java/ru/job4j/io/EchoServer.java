@@ -12,15 +12,17 @@ public class EchoServer {
                      var in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
-                    var firstLine = in.readLine();
-                    String[] string = firstLine.split("\\s");
-                    var msg = string[1].replaceAll("(\\/\\?msg=)", "");
-                    if ("Bye".equals(msg)) {
-                        server.close();
-                    }
-                    System.out.println(firstLine);
-                    for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
-                        System.out.println(str);
+                    String[] string = in.readLine().split("\\s");
+                    if (string[1].contains("msg=")) {
+                        var msg = string[1].replaceAll("(\\/\\?)", "");
+                        if ("msg=hello".equalsIgnoreCase(msg)) {
+                            System.out.printf("%s > Hello.\r\n", msg);
+                        } else if ("msg=exit".equalsIgnoreCase(msg)) {
+                            System.out.printf("%s > Завершить работу.\r\n", msg);
+                            server.close();
+                        } else {
+                            System.out.printf("%s > What?\r\n", msg);
+                        }
                     }
                     out.flush();
                 }

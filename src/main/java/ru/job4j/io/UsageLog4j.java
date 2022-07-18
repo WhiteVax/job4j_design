@@ -13,5 +13,16 @@ public class UsageLog4j {
         LOG.info("info message");
         LOG.warn("warn message");
         LOG.error("error message");
+
+        var name = "Vlad";
+        var surname = "Bedenko";
+        int age = 18;
+        var education = "University ...";
+        var degreeUniversity = "master";
+        var city = "Kyiv";
+        var birthday = "march";
+        var profession = "engineer";
+        LOG.debug("User info name : {}, surname : {}, age : {}, education : {}, degree : {}, city : {}, birthday : {},profession : {}.",
+        name, surname, age, education, degreeUniversity, city, birthday, profession);
     }
 }

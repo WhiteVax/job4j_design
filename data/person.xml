@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<person name="name" surname="surname" age="18" education="true" driverCard="66 67">
+        <contact zipCode="134" phone="+7(924)111-111-11-11"/>
+</person>
+

@@ -23,6 +23,26 @@ public class Person {
         return contact;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public boolean isEducation() {
+        return education;
+    }
+
+    public char[] getDriverCard() {
+        return driverCard;
+    }
+
     @Override
     public String toString() {
         return "Person{"

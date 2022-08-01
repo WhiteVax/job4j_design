@@ -1,20 +1,22 @@
 -- many-to-one
-CREATE TABLE course(
+CREATE TABLE course_math(
     id_student SERIAL PRIMARY KEY, 
-    course_id INT REFERENCES student(id_person)
+    hours INT
 );
 
-CREATE TABLE student(
+CREATE TABLE students(
     id_person SERIAL PRIMARY KEY,
+    id_course INT REFERENCES course_math(id_student),
     first_name VARCHAR(15),
-    last_name VARCHAR(15)
+    last_name VARCHAR(15),
+    UNIQUE(first_name, last_name)
 );
 
-INSERT INTO student(first_name, last_name)
-VALUES ('Kiril', 'Syrikov');
+INSERT INTO course_math(hours)
+VALUES(120);
 
-INSERT INTO course(course_id)
-VALUES (1);
+INSERT INTO students(id_course, first_name, last_name)
+VALUES (2, 'Kiril', 'Syrikov');
 
 -- one-to-one
 CREATE TABLE taxpayer(
@@ -23,30 +25,49 @@ CREATE TABLE taxpayer(
 );
 
 CREATE TABLE passport(
-    ti_person INT REFERENCES taxpayer(id) UNIQUE,
+    ti_person INT REFERENCES taxpayer(id),
     first_name VARCHAR(15),
     last_name VARCHAR(15)
 );
 
+INSERT INTO taxpayer(reg_address)
+VALUES('RF ...');
+
+INSERT INTO taxpayer(reg_address)
+VALUES('UK ...');
+
+INSERT INTO passport(ti_person, first_name, last_name)
+VALUES(2, 'Petr', 'Kovalski');
+
 -- many-to-many
-CREATE TABLE worker(
-    id_person SERIAL PRIMARY KEY,
+CREATE TABLE decans(
+    id_decan SERIAL PRIMARY KEY,
     first_name VARCHAR(15),
     last_name VARCHAR(15),
-    education VARCHAR(15)                                                     
+    experiance VARCHAR(30)
 );
 
-CREATE TABLE dobby_is_free(
-    vacation INT    
+CREATE TABLE diploma_theme(
+    id_theme SERIAL PRIMARY KEY,
+    theme VARCHAR(30)
 );
 
-CREATE TABLE department(
-    first_name VARCHAR(15) REFERENCES worker(first_name),
-    id_person INT REFERENCES worker(vacation),
-    vacation INT REFERENCES dobby_is_free(vacation),
-    profession VARCHAR,
-    experience INT
+CREATE TABLE students_on_diplom(
+    id_theme INT REFERENCES diploma_theme(id_theme),
+    decan INT REFERENCES decans(id_decan),
+    id_person SERIAL PRIMARY KEY,
+    first_name VARCHAR(15),
+    last_name VARCHAR(15)
 );
+
+INSERT INTO decans(first_name, last_name, experiance)
+VALUES('Alex', 'Koval', 'Distillation column');
+
+INSERT INTO diploma_theme(theme)
+VALUES('reactor calculation');
+
+INSERT INTO students_on_diplom(id_theme, decan, first_name, last_name)
+VALUES(1, 1, 'Dmitry', 'Koval')
 
 
 

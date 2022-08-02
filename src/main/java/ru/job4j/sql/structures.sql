@@ -27,7 +27,8 @@ CREATE TABLE taxpayer(
 CREATE TABLE passport(
     ti_person INT REFERENCES taxpayer(id),
     first_name VARCHAR(15),
-    last_name VARCHAR(15)
+    last_name VARCHAR(15),
+    UNIQUE(ti_person)
 );
 
 INSERT INTO taxpayer(reg_address)
@@ -40,11 +41,12 @@ INSERT INTO passport(ti_person, first_name, last_name)
 VALUES(2, 'Petr', 'Kovalski');
 
 -- many-to-many
-CREATE TABLE decans(
+CREATE TABLE decan(
     id_decan SERIAL PRIMARY KEY,
     first_name VARCHAR(15),
     last_name VARCHAR(15),
-    experiance VARCHAR(30)
+    experiance VARCHAR(30),
+    UNIQUE(first_name, last_name)
 );
 
 CREATE TABLE diploma_theme(
@@ -52,23 +54,27 @@ CREATE TABLE diploma_theme(
     theme VARCHAR(30)
 );
 
-CREATE TABLE students_on_diplom(
-    id_theme INT REFERENCES diploma_theme(id_theme),
-    decan INT REFERENCES decans(id_decan),
+CREATE TABLE student(
     id_person SERIAL PRIMARY KEY,
     first_name VARCHAR(15),
-    last_name VARCHAR(15)
+    last_name VARCHAR(15),
+    UNIQUE(first_name, last_name)
 );
 
-INSERT INTO decans(first_name, last_name, experiance)
+CREATE TABLE student_diploma_theme(
+    id_theme INT REFERENCES diploma_theme(id_theme),
+    decan INT REFERENCES decan(id_decan),
+    id_sudent INT REFERENCES student(id_person)
+);
+
+INSERT INTO decan(first_name, last_name, experiance)
 VALUES('Alex', 'Koval', 'Distillation column');
 
 INSERT INTO diploma_theme(theme)
 VALUES('reactor calculation');
 
-INSERT INTO students_on_diplom(id_theme, decan, first_name, last_name)
-VALUES(1, 1, 'Dmitry', 'Koval')
+INSERT INTO student(first_name, last_name)
+VALUES('Dmitry', 'Koval');
 
-
-
-
+INSERT INTO student_diploma_theme(id_theme, decan, id_sudent)
+VALUES(1, 1, 1);

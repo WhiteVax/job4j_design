@@ -11,18 +11,14 @@ CREATE TABLE users(
 );
 
 CREATE TABLE rulers(
-    role_user INT REFERENCES role(id),
+    id SERIAL PRIMARY KEY,
     rule VARCHAR(15)
 );
 
-CREATE TABLE commentars(
+CREATE TABLE role_rulers(
     id SERIAL PRIMARY KEY,
-    txt VARCHAR(30)
-);
-
-CREATE TABLe attachs(
-    id_attach SERIAL PRIMARY KEY,
-    attach_file VARCHAR
+    id_role INT REFERENCES role(id),
+    id_rule INT REFERENCES rulers(id)
 );
 
 CREATE TABLE category(
@@ -40,7 +36,17 @@ CREATE TABLE item(
     id_user INT REFERENCES users(id),
     category INT REFERENCES category(id),
     id_state INT REFERENCES state_item(id),
-    commentar INT REFERENCES commentars(id),
-    id_attachs INT REFERENCES attachs(id_attach),
     user_adress VARCHAR(30)
+);
+
+CREATE TABLE commentars(
+    id SERIAL PRIMARY KEY,
+    id_item INT REFERENCES item(id),
+    txt VARCHAR(30)
+);
+
+CREATE TABLe attachs(
+    id SERIAL PRIMARY KEY,
+    id_item INT REFERENCES item(id),
+    attach_file VARCHAR
 );

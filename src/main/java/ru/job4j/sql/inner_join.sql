@@ -1,5 +1,5 @@
 CREATE TABLE students(
-    id SERIAL PRIMARY KEY,
+    id INT REFERENCES department(id),
     first_name VARCHAR(15),
     last_name VARCHAR(15)
 );
@@ -11,10 +11,10 @@ CREATE TABLE department(
     data_start TIMESTAMP
 );
 
-INSERT INTO students(first_name, last_name)
-VALUES ('Petr', 'Zelenky'),
-        ('Ivan', 'Gorobich'),
-        ('Alexandr', 'Velichko');
+INSERT INTO students(id, first_name, last_name)
+VALUES (1, 'Petr', 'Zelenky'),
+        (2, 'Ivan', 'Gorobich'),
+        (3, 'Alexandr', 'Velichko');
 
 INSERT INTO department(course_math, course_psychology, data_start)
 VALUES (200, 160, '2018-10-10'),
@@ -24,14 +24,17 @@ VALUES (200, 160, '2018-10-10'),
 SELECT      first_name, last_name, course_math, data_start
 FROM        students s
 INNER JOIN  department d
-ON          s.id = d.id;
+ON          s.id = d.id
+WHERE       s.id IN(1, 3);
 
 SELECT      first_name  Имя, last_name  Фамилия, data_start  Дата_начала
 FROM        students s
-INNER JOIN  department
-ON          s.id IN(2, 3);
+INNER JOIN  department d
+ON          s.id = d.id
+WHERE       d.data_start = '2018-9-10';
 
 SELECT      *
 FROM        students s
 INNER JOIN  department d
 ON          d.id = s.id;
+WHERE       d.id IN(2, 3) AND course_math IN(180, 200);

@@ -36,5 +36,5 @@ WHERE       d.data_start = '2018-9-10';
 SELECT      *
 FROM        students s
 INNER JOIN  department d
-ON          d.id = s.id;
-WHERE       d.id IN(2, 3) AND course_math IN(180, 200);
+ON          d.id = s.id
+WHERE       d.id IN(1, 2) AND course_math IN(180, 200);

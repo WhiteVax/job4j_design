@@ -41,17 +41,17 @@ FROM devices;
 
 SELECT p.name, AVG(d.price)
 FROM devices d
-INNER JOIN people p
-ON d.id = p.id
 INNER JOIN devices_people dp
-ON dp.id = d.id
+ON dp.device_id = d.id
+INNER JOIN people p
+ON dp.people_id = p.id
 GROUP BY p.name;
 
 SELECT p.name, AVG(d.price)
 FROM devices d
-INNER JOIN people p
-ON d.id = p.id
 INNER JOIN devices_people dp
-ON dp.id = d.id
+ON dp.device_id = d.id
+INNER JOIN people p
+ON dp.people_id = p.id
 GROUP BY p.name
 HAVING AVG(d.price) > 5000;

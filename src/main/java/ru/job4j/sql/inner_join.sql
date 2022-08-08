@@ -1,7 +1,8 @@
 CREATE TABLE students(
-    id INT REFERENCES department(id),
+    id SERIAL PRIMARY KEY,
     first_name VARCHAR(15),
-    last_name VARCHAR(15)
+    last_name VARCHAR(15),
+    department_id INT REFERENCES department(id)
 );
 
 CREATE TABLE department(
@@ -11,10 +12,10 @@ CREATE TABLE department(
     data_start TIMESTAMP
 );
 
-INSERT INTO students(id, first_name, last_name)
-VALUES (1, 'Petr', 'Zelenky'),
-        (2, 'Ivan', 'Gorobich'),
-        (3, 'Alexandr', 'Velichko');
+INSERT INTO students(id, first_name, last_name, department_id)
+VALUES (1, 'Petr', 'Zelenky', 1),
+        (2, 'Ivan', 'Gorobich', 2),
+        (3, 'Alexandr', 'Velichko', 3);
 
 INSERT INTO department(course_math, course_psychology, data_start)
 VALUES (200, 160, '2018-10-10'),

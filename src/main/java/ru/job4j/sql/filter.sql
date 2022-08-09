@@ -12,10 +12,10 @@ CREATE TABLE product(
 );
 
 INSERT INTO type(name)
-VALUES  ('Сыр'),
-        ('Хлеб'),
-        ('Мороженое'),
-        ('Молоко');
+VALUES  ('СЫР'),
+        ('ХЛЕБ'),
+        ('МОРОЖЕНОЕ'),
+        ('МОЛОКО');
 
 INSERT INTO product(name, type_id, expired_date, price)
 VALUES  ('Белый', 2, '12-08-2022', 30),
@@ -37,11 +37,11 @@ SELECT          *
 FROM            product p
 INNER JOIN      type t
 ON              p.type_id = t.id
-WHERE           p.type_id = 1;
+WHERE           t.name LIKE 'СЫР';
 
 SELECT          *
 FROM            product p
-INNER JOIN type t
+INNER JOIN      type t
 ON              p.type_id = t.id
 WHERE           p.name LIKE 'Мороженое%';
 
@@ -49,7 +49,7 @@ SELECT          *
 FROM            product p
 INNER JOIN type t
 ON              p.type_id = t.id
-WHERE           p.expired_date < '8-8-2022';
+WHERE           p.expired_date < CURRENT_DATE;
 
 SELECT          t.name, p.name, p.price
 FROM            product p
@@ -60,26 +60,25 @@ HAVING          p.price = (SELECT MAX(price) FROM product);
 
 SELECT          t.name имя_типа, COUNT(p.type_id) количество
 FROM            product p
-INNER JOIN type t
+INNER JOIN      type t
 ON              p.type_id = t.id
 GROUP BY        t.name;
 
 SELECT          t.name имя_типа, p.name продукт
 FROM            product p
-INNER JOIN type t
+INNER JOIN      type t
 ON              p.type_id = t.id
 GROUP BY        t.name, p.name,  p.type_id
-HAVING          p.type_id IN(1, 4);
+HAVING          t.name IN('СЫР', 'МОЛОКО');
 
 SELECT          t.name тип_продукта, COUNT(p.type_id)
 FROM            product p
-INNER JOIN type t
+INNER JOIN      type t
 ON              p.type_id = t.id
 GROUP BY        t.name
 HAVING          COUNT(p.type_id) < 10;
 
 SELECT          p.id, p.name, t.name
 FROM            product p
-INNER JOIN type t
-ON              p.type_id = t.id
-GROUP By        p.id, p.name, t.name;
+INNER JOIN      type t
+ON              p.type_id = t.id;

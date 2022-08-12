@@ -81,4 +81,5 @@ VALUES ('Sofia', 'male'),
 
 SELECT      *
 FROM        teens t_1
-CROSS JOIN  teens t_2;
+CROSS JOIN  teens t_2
+WHERE       t_1 != t_2;

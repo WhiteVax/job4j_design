@@ -104,11 +104,12 @@ public class TableEditor implements AutoCloseable {
         try (var in = TableEditor.class.getClassLoader().getResourceAsStream("editor.properties")) {
             config.load(in);
         }
-        var editor = new TableEditor(config);
-        editor.createTable("students");
-        editor.addColumn("students", "first_name", "VARCHAR(30)");
-        editor.renameColumn("students", "first_name", "name");
-        editor.dropColumn("students", "name");
-        editor.dropTable("students");
+        try (var editor = new TableEditor(config)) {
+            editor.createTable("students");
+            editor.addColumn("students", "first_name", "VARCHAR(30)");
+            editor.renameColumn("students", "first_name", "name");
+            editor.dropColumn("students", "name");
+            editor.dropTable("students");
+        }
     }
 }

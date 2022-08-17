@@ -24,8 +24,11 @@ public class ImportDB {
         try (var reader = new BufferedReader(new FileReader(dump))) {
             reader.lines().forEach(e -> {
                 String[] s = e.split(";");
-                if (s.length != 2) {
+                if (s.length != 2 || (s[0].isBlank() || s[1].isBlank())) {
                     throw new IllegalArgumentException(String.format("Wrong line %s.", Arrays.toString(s)));
+                } else if (!s[0].matches("(^\\w+\\s\\w+)")
+                        || !s[1].matches("^([a-z0-9_\\.-]+)@([a-z0-9_\\.-]+)\\.([a-z\\.]{2,6})$")) {
+                    throw new IllegalArgumentException(String.format("Wrong format %s.", Arrays.toString(s)));
                 }
                 users.add(new User(s[0], s[1]));
             });
@@ -41,7 +44,8 @@ public class ImportDB {
                 properties.getProperty("jdbc.password")
         )) {
             for (var user : users) {
-                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO users(name, email) VALUES (?, ?)")) {
+                try (PreparedStatement ps = connection.prepareStatement(
+                        "INSERT INTO users(name, email) VALUES (?, ?)")) {
                     ps.setString(1, user.name);
                     ps.setString(2, user.email);
                     ps.execute();

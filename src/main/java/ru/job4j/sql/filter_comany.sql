@@ -39,8 +39,7 @@ FROM company c
 LEFT JOIN person p on c.id = p.company_id
 group by c.name
 HAVING COUNT(p.company_id) = (SELECT COUNT(p.company_id) size
-                              FROM company c
-                              LEFT JOIN person p on c.id = p.company_id
-                              GROUP BY c.name
+                              FROM person p
+                              GROUP BY p.company_id
                               ORDER BY size DESC
                               LIMIT 1);

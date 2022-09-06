@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PostStore {
 
-    private static  Map<Integer, Post> posts = new HashMap<>();
+    private Map<Integer, Post> posts = new HashMap<>();
 
     private int atomicInteger = 1;
 
@@ -19,7 +19,7 @@ public class PostStore {
         posts.clear();
     }
 
-    public static Collection<Post> getPosts() {
+    public Collection<Post> getPosts() {
         return posts.values();
     }
 }

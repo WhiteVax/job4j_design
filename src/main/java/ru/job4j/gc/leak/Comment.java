@@ -11,11 +11,11 @@ public class Comment {
         this.user = user;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public User getUser() {
-        return user;
+    @Override
+    public String toString() {
+        return "Comment{"
+                + "text='" + text + '\''
+                + ", user=" + user
+                + '}';
     }
 }

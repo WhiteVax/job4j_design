@@ -13,10 +13,13 @@ public class MaxMin {
     }
 
     private <T> T find(List<T> value, Comparator<T> comparator) {
-        T rsl = value.get(0);
-        for (var v: value) {
-            if (comparator.compare(v, rsl) > 0) {
-                rsl = v;
+        T rsl = null;
+        if (!value.isEmpty()) {
+            rsl = value.get(0);
+            for (var v: value) {
+                if (comparator.compare(v, rsl) > 0) {
+                    rsl = v;
+                }
             }
         }
         return rsl;

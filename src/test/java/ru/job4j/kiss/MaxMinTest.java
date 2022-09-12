@@ -20,4 +20,11 @@ public class MaxMinTest {
         var min = new MaxMin();
         assertThat(min.min(numbers, Integer::compareTo)).isEqualTo(-2);
     }
+
+    @Test
+    public void whenNull() {
+        List<Integer> numbers = List.of();
+        var min = new MaxMin();
+        assertThat(min.min(numbers, Integer::compareTo)).isNull();
+    }
 }

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class GenerateTest {
 
     @Test
-    public void isCorrect() {
+    public void whenCorrect() {
         var generate = new Generate();
         var temple = "I am a ${name}, Who are ${subject}? ";
         Map<String, String> map = Map.of("name", "Petr",
@@ -21,7 +21,7 @@ public class GenerateTest {
     }
 
     @Test
-    public void isTemplateWithoutName() {
+    public void whenTemplateWithoutName() {
         var generate = new Generate();
         var temple = "I am a, Who are ${subject}? ";
         Map<String, String> map = Map.of("name", "Petr",
@@ -30,7 +30,7 @@ public class GenerateTest {
     }
 
     @Test
-    public void isTemplateWithoutSubject() {
+    public void whenTemplateWithoutSubject() {
         var generate = new Generate();
         var temple = "I am a ${name}, Who are ? ";
         Map<String, String> map = Map.of("name", "Petr",
@@ -39,7 +39,7 @@ public class GenerateTest {
     }
 
     @Test
-    public void isInvalidMap() {
+    public void whenInvalidMap() {
         var generate = new Generate();
         var temple = "I am a ${name}, Who are ${subject}? ";
         Map<String, String> map = Map.of("subject", "Arsentev");
@@ -47,7 +47,7 @@ public class GenerateTest {
     }
 
     @Test
-    public void isInvalidKeys() {
+    public void whenInvalidKeys() {
         var generate = new Generate();
         var temple = "I am a ${name}, Who are ${subject}? ";
         Map<String, String> map = Map.of("name", "Petr",

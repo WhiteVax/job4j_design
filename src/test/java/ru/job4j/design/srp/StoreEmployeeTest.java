@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 import static  ru.job4j.design.srp.ReportEngine.DATE_FORMAT;
+import static  ru.job4j.design.srp.ReportAccounting.DOLLAR_EXCHANGE_RATE;
 
 public class StoreEmployeeTest {
 
@@ -40,7 +41,7 @@ public class StoreEmployeeTest {
                 .append(System.lineSeparator()).append(worker.getName()).append(";")
                 .append(DATE_FORMAT.format(worker.getHired().getTime())).append(";")
                 .append(DATE_FORMAT.format(worker.getFired().getTime())).append(";")
-                .append(worker.getSalary() / 65).append(";").append(System.lineSeparator());
+                .append(worker.getSalary() / DOLLAR_EXCHANGE_RATE).append(";").append(System.lineSeparator());
         assertThat(reportEngine.generate(employee -> employee.getSalary() < 33_000))
                 .isEqualTo(expected.toString());
     }

@@ -18,18 +18,25 @@ import java.util.function.Predicate;
 
 public class ReportXml implements Report {
 
+    JAXBContext context = null;
+    Marshaller marshaller = null;
+
     private Store store;
 
     public ReportXml(Store store) {
         this.store = store;
+        try {
+            this.context = JAXBContext.newInstance(EmployeeList.class);
+            this.marshaller = context.createMarshaller();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public String generate(Predicate<Employee> filter) {
         var xml = "";
         try {
-            var context = JAXBContext.newInstance(EmployeeList.class);
-            var marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             try (var writer = new StringWriter()) {
                 marshaller.marshal(new EmployeeList(store.findBy(filter)), writer);

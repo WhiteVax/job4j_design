@@ -4,31 +4,34 @@ import org.junit.Test;
 import ru.job4j.design.srp.Employee;
 import ru.job4j.design.srp.StoreEmployee;
 
-import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
-import static ru.job4j.design.ocp.ReportJson.DATE_FORMAT;
 
 public class StoreReportJsonTest {
 
     @Test
     public void whenCorrectTemplateRepJson() {
         var store = new StoreEmployee();
-        var date = Calendar.getInstance();
-        var worker = new Employee("Pavel", date, date, 30_000);
+        var calendar = new GregorianCalendar(2022, 10, 12, 13, 50);
+        var worker = new Employee("Pavel", calendar, calendar, 30_000);
         store.add(worker);
-        store.add(new Employee("Ivan", date, date, 35_000));
+        store.add(new Employee("Ivan", calendar, calendar, 35_000));
         var report = new ReportJson(store);
         var expected = new StringBuilder();
-        expected.append("{\"name\":\"").append(worker.getName())
-                .append("\",\"date fired\":\"")
-                .append(DATE_FORMAT.format(worker.getFired().getTime()))
-                .append("\",\"date hired\":\"")
-                .append(DATE_FORMAT.format(worker.getFired().getTime()))
-                .append("\",\"salary\":")
-                .append(Math.round(worker.getSalary())).append("}")
-                .append(System.lineSeparator());
-        assertThat(report.generate(employee -> employee.getSalary() < 33_000))
+        expected.append("[{\"name\":\"Pavel\",\"hired\":")
+                .append("{\"year\":2022,\"month\":10,\"dayOfMonth\":12,")
+                .append("\"hourOfDay\":13,\"minute\":50,\"second\":0},")
+                .append("\"fired\":{\"year\":2022,\"month\":10,")
+                .append("\"dayOfMonth\":12,\"hourOfDay\":13,\"minute\":50,")
+                .append("\"second\":0},\"salary\":30000.0},{\"name\":\"Ivan\",")
+                .append("\"hired\":{\"year\":2022,\"month\":10,\"dayOfMonth\":12,")
+                .append("\"hourOfDay\":13,\"minute\":50,\"second\":0},")
+                .append("\"fired\":{\"year\":2022,\"month\":10,\"dayOfMonth\":12,")
+                .append("\"hourOfDay\":13,\"minute\":50,\"second\":0},")
+                .append("\"salary\":35000.0}]");
+        assertThat(report.generate(Objects::nonNull))
                 .isEqualTo(expected.toString());
     }
 }

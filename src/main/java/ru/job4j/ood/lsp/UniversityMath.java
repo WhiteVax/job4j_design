@@ -8,7 +8,7 @@ public class UniversityMath extends University {
 
     @Override
     public void addStudent(Student student) {
-        if (student.getAvg() > 11.0) {
+        if (student.getAvg() > 10.0) {
             students.add(student);
         }
     }

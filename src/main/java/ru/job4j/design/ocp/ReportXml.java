@@ -18,9 +18,8 @@ import java.util.function.Predicate;
 
 public class ReportXml implements Report {
 
-    JAXBContext context;
-    Marshaller marshaller;
-
+    private JAXBContext context;
+    private Marshaller marshaller;
     private Store store;
 
     public ReportXml(Store store) {

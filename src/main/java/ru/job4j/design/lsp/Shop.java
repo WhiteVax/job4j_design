@@ -6,11 +6,11 @@ import java.util.function.Predicate;
 
 public class Shop implements Store {
     private static final  int PERCENT_DISCOUNT = 75;
-    private static final  int PERCENT_WAREHOUSE = 25;
-    private static final  int PERCENT_TRASH = 100;
+    private static final  int PERCENT_FOOD = 25;
+    private static final  int FOOD_OVERDUE = 100;
 
-    private static final Predicate<Float> FILTER = f -> f >= PERCENT_WAREHOUSE
-            && f < PERCENT_TRASH;
+    private static final Predicate<Float> FILTER = percent -> percent >= PERCENT_FOOD
+            && percent < FOOD_OVERDUE;
 
     private final List<Food> list = new ArrayList<>();
 

@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Trash implements Store {
-    private static final  int PERCENT_TRASH = 100;
+    private static final  int FOOD_OVERDUE = 100;
 
-    private static final Predicate<Float> FILTER = f -> f >= PERCENT_TRASH;
+    private static final Predicate<Float> FILTER = percent -> percent >= FOOD_OVERDUE;
 
     private final List<Food> list = new ArrayList<>();
 

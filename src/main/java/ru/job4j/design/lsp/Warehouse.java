@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class Warehouse implements Store {
-    private static final  int PERCENT_WAREHOUSE = 25;
-    private static final  int PERCENT_TRASH = 100;
+    private static final  int PERCENT_FOOD = 25;
 
-    private static final Predicate<Float> FILTER = f -> f < PERCENT_WAREHOUSE
-            && f < PERCENT_TRASH;
+    private static final Predicate<Float> FILTER = percent -> percent < PERCENT_FOOD;
 
     private final List<Food> list = new ArrayList<>();
 

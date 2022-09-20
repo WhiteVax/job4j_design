@@ -3,7 +3,6 @@ package ru.job4j.design.lsp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface Store {
     default float calculatePercent(Food food) {
@@ -14,10 +13,7 @@ public interface Store {
         return (float) expireDays / totalShelfLife * 100;
     }
 
-    default boolean check(Predicate<Food> filter, Food food) {
-        return filter.test(food);
-    }
-
-    public void add(Food food);
-    public List<Food> getList();
+    boolean check(Food food);
+    boolean add(Food food);
+    List<Food> getList();
 }

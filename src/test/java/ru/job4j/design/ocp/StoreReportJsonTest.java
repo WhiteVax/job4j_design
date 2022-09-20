@@ -1,6 +1,7 @@
 package ru.job4j.design.ocp;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import ru.job4j.design.srp.Employee;
 import ru.job4j.design.srp.StoreEmployee;
 

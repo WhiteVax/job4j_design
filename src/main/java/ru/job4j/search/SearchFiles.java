@@ -15,7 +15,7 @@ import java.util.List;
  * -t - тип поиска: mask искать по маске, name по полному совпадение имени,
  * regex по регулярному выражению.
  * -o - результат записать в файл.
- * @Version 1.0
+ * @Version 1.1
  */
 
 public class SearchFiles {

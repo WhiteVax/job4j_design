@@ -32,10 +32,9 @@ public class Visitor extends SimpleFileVisitor<Path> {
     public Predicate<String> filter() {
         Predicate<String> filter = Objects::nonNull;
         if ("mask".equals(type)) {
-            var mask = new StringBuilder();
-            mask.append(".");
-            mask.append(name);
-            filter = element -> element.matches(mask.toString());
+            var pattern = String.format("^%s$",
+                    name.replace(".", "[.]").replace("*", ".*").replace("?", "."));
+            filter = element -> element.matches(pattern);
         } else if ("name".equals(type)) {
             filter = element -> element.equals(name);
         } else if ("regex".equals(type)) {

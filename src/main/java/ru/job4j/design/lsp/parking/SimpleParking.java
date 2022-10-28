@@ -4,28 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleParking implements Parking {
-    private int sizePassengerCar;
-    private int sizeTrack;
-    private final List<Car> passengerCars = new ArrayList<>(sizePassengerCar);
-    private final List<Car> tracks = new ArrayList<>(sizeTrack);
+    private final int sizePassengerCar;
+    private final int sizeTrack;
+    private final List<Car> passengerCars;
+    private final List<Car> tracks;
 
     public SimpleParking(int sizePassengerCar, int sizeTrack) {
         this.sizePassengerCar = sizePassengerCar;
         this.sizeTrack = sizeTrack;
+        this.passengerCars = new ArrayList<>(sizePassengerCar);
+        this.tracks = new ArrayList<>(sizeTrack);
     }
 
     @Override
     public boolean addCar(Car car) {
         var rsl = false;
-        if (car.getSize() == 2 && tracks.size() < sizeTrack) {
+        if (car.getSize() > PassengerCar.SIZE && tracks.size() < sizeTrack) {
             tracks.add(car);
             rsl = true;
-        } else if (passengerCars.size() + 1 < sizePassengerCar && car.getSize() == 2) {
-            passengerCars.add(car);
+        } else if (car.getSize() == PassengerCar.SIZE && passengerCars.size() < sizePassengerCar) {
             passengerCars.add(car);
             rsl = true;
-        } else if (passengerCars.size() < sizePassengerCar) {
-            passengerCars.add(car);
+        } else if (passengerCars.size() + car.getSize() <= sizePassengerCar) {
+            for (int i = 0; i < car.getSize(); i++) {
+                passengerCars.add(car);
+            }
             rsl = true;
         }
         return rsl;

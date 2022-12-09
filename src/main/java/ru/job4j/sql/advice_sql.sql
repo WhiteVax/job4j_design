@@ -67,8 +67,7 @@ FROM orders o
          JOIN student s ON o.student_id = s.id
          JOIN books b ON o.book_id = b.id
          JOIN authors a ON o.id = a.id
-GROUP BY (o.id, o.active, s.first_name, s.last_name, b.name,
-          b.year, a.first_name, a.last_name)
+WHERE b.name LIKE '%Java%'
 ORDER BY o.id;
 
 DROP VIEW show_order_and_student_book_with_author;

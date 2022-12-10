@@ -62,7 +62,7 @@ SELECT o.id,
        b.name       book,
        b.year,
        a.first_name author_name,
-       a.last_name  author_surname
+       a.last_name author_surname
 FROM orders o
          JOIN student s ON o.student_id = s.id
          JOIN books b ON o.book_id = b.id
@@ -71,3 +71,45 @@ WHERE b.name LIKE '%Java%'
 ORDER BY o.id;
 
 DROP VIEW show_order_and_student_book_with_author;
+
+CREATE TABLE history_of_price
+(
+    id    serial primary key,
+    name  varchar(50),
+    price integer,
+    date  timestamp
+);
+
+CREATE TRIGGER tax_after_insert
+    AFTER INSERT
+    ON history_of_price
+    REFERENCING NEW TABLE AS INSERTED
+    FOR EACH STATEMENT
+EXECUTE PROCEDURE tax();
+
+CREATE OR REPLACE FUNCTION tax()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE history_of_price
+    SET price = price * 1.1;
+    RETURN new;
+END;
+$$
+    LANGUAGE 'plpgsql';
+
+INSERT INTO history_of_price (name, price, date)
+VALUES ('milk', 20, '2020-02-02');
+
+CREATE TRIGGER tax_before_insert
+    BEFORE INSERT
+    ON history_of_price
+    FOR EACH ROW
+EXECUTE PROCEDURE tax();
+
+INSERT INTO history_of_price (name, price, date)
+VALUES ('bread', 20, '2020-02-10');
+
+ALTER TABLE history_of_price
+    DISABLE TRIGGER tax_after_insert;
+DROP TRIGGER tax_before_insert ON history_of_price;

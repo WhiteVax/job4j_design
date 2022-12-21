@@ -108,7 +108,7 @@ $$
 
 CREATE TRIGGER tax_after_insert
     AFTER INSERT
-    ON history_of_price
+    ON products
     REFERENCING NEW TABLE AS INSERTED
     FOR EACH STATEMENT
 EXECUTE PROCEDURE tax();
@@ -135,8 +135,6 @@ EXECUTE PROCEDURE taxSecond();
 -- 3) Триггер на row уровне, который при вставки продукта в таблицу, будет заносить имя, цену,
 -- текущую дату в history_of_price
 
-
-
 CREATE OR REPLACE FUNCTION taxThird()
     RETURNS TRIGGER AS
 $$
@@ -162,3 +160,4 @@ ALTER TABLE history_of_price
     DISABLE TRIGGER tax_after_insert;
 DROP TRIGGER tax_before_insert ON history_of_price;
 
+DROP TABLE products;

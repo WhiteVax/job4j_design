@@ -161,3 +161,111 @@ ALTER TABLE history_of_price
 DROP TRIGGER tax_before_insert ON history_of_price;
 
 DROP TABLE products;
+
+-- хранимая процедура
+
+create table products (
+                          id serial primary key,
+                          name varchar(50),
+                          producer varchar(50),
+                          count integer default 0,
+                          price integer
+);
+
+create or replace procedure insert_data(i_name varchar, prod varchar, i_count integer, i_price integer)
+    language 'plpgsql'
+as $$
+BEGIN
+    insert into products (name, producer, count, price)
+    values (i_name, prod, i_count, i_price);
+END
+$$;
+
+-- вызывается процедура через call
+
+call insert_data('product_2', 'producer_2', 15, 32);
+
+create or replace procedure update_data(u_count integer, tax float, u_id integer)
+    language 'plpgsql'
+as $$
+BEGIN
+    if u_count > 0 THEN
+        update products set count = count - u_count where id = u_id;
+    end if;
+    if tax > 0 THEN
+        update products set price = price + price * tax;
+    end if;
+END;
+$$;
+
+-- хранимая функция
+
+create or replace function f_insert_data(i_name varchar, prod varchar, i_count integer, i_price integer)
+    returns void
+    language 'plpgsql'
+as
+$$
+begin
+    insert into products (name, producer, count, price)
+    values (i_name, prod, i_count, i_price);
+end;
+$$;
+
+select f_insert_data('product_1', 'producer_1', 25, 50);
+
+create or replace function f_update_data(u_count integer, tax float, u_id integer)
+-- выводит кол-во обновлённых товаров или при цене общяя сума
+    returns integer
+    language 'plpgsql'
+as
+$$
+declare
+    result integer;
+begin
+    if u_count > 0 THEN
+        update products set count = count - u_count where id = u_id;
+        select into result count from products where id = u_id;
+    end if;
+    if tax > 0 THEN
+        update products set price = price + price * tax;
+        select into result sum(price) from products;
+    end if;
+    return result;
+end;
+$$;
+
+-- хранимая функция для удаление
+
+INSERT INTO products(name, producer, count, price)
+VALUES ('bread', '', 4, 20);
+
+CREATE OR REPLACE FUNCTION delfunc(del_count INTEGER)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    AS $$
+BEGIN
+    DELETE FROM products
+    WHERE del_count > count;
+END;
+$$;
+
+SELECT delfunc(5);
+DROP FUNCTION delfunc(del_count INTEGER);
+
+-- хранимая процедура для удаление
+
+INSERT INTO products(name, producer, count, price)
+VALUES ('bread', '', 4, 20);
+
+CREATE OR REPLACE PROCEDURE delprod(del_producer VARCHAR)
+    LANGUAGE 'plpgsql'
+AS $$
+BEGIN
+    DELETE FROM products
+    WHERE del_producer LIKE producer;
+END;
+$$;
+
+CALL delprod('');
+DROP PROCEDURE delprod(del_producer VARCHAR);
+ALTER SEQUENCE products_id_seq RESTART WITH 1;

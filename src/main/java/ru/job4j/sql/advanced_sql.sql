@@ -84,10 +84,11 @@ CREATE TABLE history_of_price
 
 CREATE TABLE products
 (
-    id    serial primary key,
-    name  varchar(50),
-    price integer,
-    date  timestamp
+    id       serial primary key,
+    name     varchar(50),
+    producer varchar(50),
+    count    integer default 0,
+    price    integer
 );
 
 -- 1) Триггер срабатывает после вставки данных, для любого товара и насчитывает налог
@@ -134,11 +135,13 @@ EXECUTE PROCEDURE taxSecond();
 -- 3) Триггер на row уровне, который при вставки продукта в таблицу, будет заносить имя, цену,
 -- текущую дату в history_of_price
 
+
+
 CREATE OR REPLACE FUNCTION taxThird()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    INSERT INTO history_of_price(name, price, date) VALUES (new.name, new.price, new.date);
+    INSERT INTO history_of_price(name, price, date) VALUES (new.name, new.price, current_date);
     RETURN new;
 END;
 $$
@@ -150,11 +153,12 @@ CREATE TRIGGER before_insert_product_then_in_history
     FOR EACH ROW
 EXECUTE PROCEDURE taxThird();
 
-INSERT INTO products (name, price, date)
-VALUES ('bread', 20, '2020-02-10');
+INSERT INTO products(name, producer, count, price)
+VALUES ('хлеб', 'Тульский завод', 10, 50);
 
 -- Манипуляции с триггерами
 
 ALTER TABLE history_of_price
     DISABLE TRIGGER tax_after_insert;
 DROP TRIGGER tax_before_insert ON history_of_price;
+

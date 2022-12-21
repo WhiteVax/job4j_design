@@ -53,6 +53,8 @@ VALUES ('false', '3', '1'),
        ('false', '2', '3'),
        ('true', '4', '4');
 
+-- Виртуальная таблица, строится на выборке
+
 CREATE VIEW show_order_and_student_book_with_author
 AS
 SELECT o.id,
@@ -80,6 +82,29 @@ CREATE TABLE history_of_price
     date  timestamp
 );
 
+CREATE TABLE products
+(
+    id    serial primary key,
+    name  varchar(50),
+    price integer,
+    date  timestamp
+);
+
+-- 1) Триггер срабатывает после вставки данных, для любого товара и насчитывает налог
+-- на товар, действует на запрос (statement уровень)
+
+CREATE OR REPLACE FUNCTION tax()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    UPDATE products
+    SET price = price + price * 0.1
+    WHERE id = (SELECT id FROM INSERTED);
+    RETURN new;
+END;
+$$
+    LANGUAGE 'plpgsql';
+
 CREATE TRIGGER tax_after_insert
     AFTER INSERT
     ON history_of_price
@@ -87,28 +112,48 @@ CREATE TRIGGER tax_after_insert
     FOR EACH STATEMENT
 EXECUTE PROCEDURE tax();
 
-CREATE OR REPLACE FUNCTION tax()
+-- 2) Триггер срабаывает до вставки данных, для любого товара и насчитывает налог
+-- на товар, действует на запрос (row уровень)
+
+CREATE OR REPLACE FUNCTION taxSecond()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    UPDATE history_of_price
-    SET price = price * 1.1;
+    new.price = new.price + new.price * 0.1;
     RETURN new;
 END;
 $$
     LANGUAGE 'plpgsql';
 
-INSERT INTO history_of_price (name, price, date)
-VALUES ('milk', 20, '2020-02-02');
-
 CREATE TRIGGER tax_before_insert
     BEFORE INSERT
-    ON history_of_price
+    ON products
     FOR EACH ROW
-EXECUTE PROCEDURE tax();
+EXECUTE PROCEDURE taxSecond();
 
-INSERT INTO history_of_price (name, price, date)
+-- 3) Триггер на row уровне, который при вставки продукта в таблицу, будет заносить имя, цену,
+-- текущую дату в history_of_price
+
+CREATE OR REPLACE FUNCTION taxThird()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    INSERT INTO history_of_price(name, price, date) VALUES (new.name, new.price, new.date);
+    RETURN new;
+END;
+$$
+    LANGUAGE 'plpgsql';
+
+CREATE TRIGGER before_insert_product_then_in_history
+   AFTER INSERT
+    ON products
+    FOR EACH ROW
+EXECUTE PROCEDURE taxThird();
+
+INSERT INTO products (name, price, date)
 VALUES ('bread', 20, '2020-02-10');
+
+-- Манипуляции с триггерами
 
 ALTER TABLE history_of_price
     DISABLE TRIGGER tax_after_insert;

@@ -35,3 +35,19 @@ SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 -- Этот уровень обеспечивает отсутствие всех проблем, т.е. потерянные обновления, грязное чтение, неповторяющееся чтение и фантомное чтение.
 -- Физически это достигается за счет управления очередью транзакций и сложной системой блокировок.
 -- Данный уровень изолированности самый надежный по части точности работы с данными, однако он же и самый медленный с точки зрения производительности.
+-- start transaction; begin transaction; set transaction режим_транзакции; set session characteristics as transaction isolation level serializable; - все транзакции в сеансе
+-- start transaction isolation level read committed; установка уровня изоляции во время начала транзакции
+-- commit; commit transaction; - полностью аналогичные команды rollback; rollback transaction;
+-- savepoint имя_точки_сохранения; release savepoint имя_точки_сохранения; - для создания и уничтожения точки сохранения, а так же ВСЕ до неё.
+-- rollback to savepoint имя_точки_сохранения; откат до точки сохранения.
+    START TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+    SAVEPOINT first;
+    INSERT INTO products_ (name, count, price) VALUES ('product_11', 3, 50);
+    INSERT INTO products_ (name, count, price) VALUES ('product_12', 15, 32);
+    SAVEPOINT second;
+    DROP TABLE products_;
+    SELECT * FROM products_;
+    ROLLBACK TO first;
+-- откат до первой точки сохранения
+    SELECT * FROM products_;
+    ROLLBACK TRANSACTION ;

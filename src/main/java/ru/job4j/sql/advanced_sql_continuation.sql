@@ -100,7 +100,8 @@ VALUES ('product_1', 1, 5),
        ('product_19', 19, 95),
        ('product_20', 20, 100);
 BEGIN TRANSACTION;
-DECLARE name_cursor CURSOR FOR SELECT * FROM products_;
+DECLARE name_cursor CURSOR FOR SELECT *
+                               FROM products_;
 FETCH 20 FROM name_cursor;
 -- выгрузить 20 строк
 MOVE LAST FROM NAME_cursor;
@@ -174,3 +175,39 @@ ROLLBACK;
 -- но т.к. отношение уже находится во 2 НФ, то будут соблюдаться глобальные правила, которые распространяются на множество записей;
 -- ярким признаком нарушения 3НФ является бессмысленное дублирование одних и тех же данных в множестве строк таблицы
 -- (тогда атрибуты, значения которых бессмысленно дублируются, являются первыми кандидатами на перемещение в новое отдельное отношение).
+
+CREATE TABLE customers_
+(
+    id         SERIAL PRIMARY KEY,
+    first_name TEXT,
+    last_name  TEXT,
+    age        INT,
+    country    TEXT
+);
+
+CREATE TABLE orders_
+(
+    id          serial primary key,
+    amount      int,
+    customer_id int references customers_ (id) ON DELETE CASCADE
+);
+
+INSERT INTO customers_ (first_name, last_name, age, country)
+VALUES ('Тест1', 'Тест2', 20, 'KZ'),
+       ('Тест2', 'Тест2', 20, 'KZ'),
+       ('Тест3', 'Тест3', 20, 'KZ'),
+       ('Тест4', 'Тест4', 20, 'KZ'),
+       ('Тест5', 'Тест5', 20, 'KZ'),
+       ('Тест6', 'Тест6', 20, 'KZ'),
+       ('Тест7', 'Тест7', 20, 'KZ');
+
+INSERT INTO orders_ (amount, customer_id)
+VALUES (3, 5),
+       (2, 1),
+       (2, 2),
+       (2, 3),
+       (2, 4);
+
+SELECT *
+FROM customers_
+WHERE id NOT IN (SELECT id FROM orders_);

@@ -1,53 +1,61 @@
 package ru.job4j.collection;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import org.junit.Test;
-
 import java.util.NoSuchElementException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SimpleQueueTest {
+    private SimpleQueue<Integer> queue;
+
+    @BeforeEach
+    public void setUp() {
+        queue = new SimpleQueue<>();
+        queue.push(1);
+    }
 
     @Test
     public void whenPushPoll() {
-        SimpleQueue<Integer> queue = new SimpleQueue<>();
-        queue.push(1);
-        int rsl = queue.poll();
-        assertThat(rsl, is(1));
+        assertThat(queue.poll()).isEqualTo(1);
     }
 
     @Test
     public void when2PushPoll() {
-        SimpleQueue<Integer> queue = new SimpleQueue<>();
-        queue.push(1);
         queue.push(2);
-        int rsl = queue.poll();
-        assertThat(rsl, is(1));
+        assertThat(queue.poll()).isEqualTo(1);
     }
 
     @Test
     public void when2PushPollPushPoll() {
-        SimpleQueue<Integer> queue = new SimpleQueue<>();
-        queue.push(1);
         queue.poll();
         queue.push(2);
-        int rsl = queue.poll();
-        assertThat(rsl, is(2));
+        assertThat(queue.poll()).isEqualTo(2);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void whenEmptyPoll() {
         SimpleQueue<Integer> queue = new SimpleQueue<>();
-        queue.poll();
+        assertThatThrownBy(queue::poll)
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("Queue is empty");
     }
+
+    @Test
+    public void when2PushPollPushPollEmpty() {
+        queue.poll();
+        queue.push(2);
+        queue.poll();
+        assertThatThrownBy(queue::poll)
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("Queue is empty");
+    }
+
     @Test
     public void whenPushPushPollAndPush() {
-        SimpleQueue<Integer> queue = new SimpleQueue<>();
-        queue.push(1);
         queue.push(2);
         queue.poll();
         queue.push(3);
-        assertThat(queue.poll(), is(2));
+        assertThat(queue.poll()).isEqualTo(2);
     }
 }

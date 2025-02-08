@@ -9,7 +9,7 @@ public class SimpleQueue<T> {
     public T poll() {
         if (out.isEmpty()) {
             if (in.isEmpty()) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("Queue is empty");
             }
             while (!in.isEmpty()) {
                 out.push(in.pop());

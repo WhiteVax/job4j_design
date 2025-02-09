@@ -36,15 +36,14 @@ public class SimpleArrayList<T> implements List<T> {
 
     @Override
     public T set(int index, T newValue) {
-        T setValue = get(index);
+        T setValue = get(Objects.checkIndex(index, size));
         container[index] = newValue;
-        modCount++;
         return setValue;
     }
 
     @Override
     public T remove(int index) {
-        T deletedValue = get(index);
+        T deletedValue = get(Objects.checkIndex(index, size));
         System.arraycopy(container, index + 1, container, index, container.length - index - 1);
         container[container.length - 1] = null;
         size--;
@@ -54,7 +53,7 @@ public class SimpleArrayList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        Objects.checkIndex(index, container.length);
+        Objects.checkIndex(index, size);
         return container[index];
     }
 

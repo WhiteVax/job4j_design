@@ -1,22 +1,28 @@
 package ru.job4j.collection;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class ForwardLinked<T> implements Iterable<T> {
     private Node<T> head;
+    private int size = 0;
+    private int modCount;
 
     public void add(T value) {
         Node<T> node = new Node<>(value, null);
         if (head == null) {
             head = node;
-            return;
+        } else {
+            Node<T> current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = node;
         }
-        Node<T> tail = head;
-        while (tail.next != null) {
-            tail = tail.next;
-        }
-        tail.next = node;
+        size++;
+        modCount++;
     }
 
     public boolean revert() {
@@ -37,6 +43,8 @@ public class ForwardLinked<T> implements Iterable<T> {
 
     public void addFirst(T value) {
         head = new Node<>(value, head);
+        size++;
+        modCount++;
     }
 
     public T deleteFirst() {
@@ -48,16 +56,23 @@ public class ForwardLinked<T> implements Iterable<T> {
         head.value = null;
         head.next = null;
         head = fist;
+        size--;
+        modCount++;
         return deleteItem;
     }
 
     @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {
+            final private int expectedMod = modCount;
+
             Node<T> node = head;
 
             @Override
             public boolean hasNext() {
+                if (expectedMod != modCount) {
+                    throw new ConcurrentModificationException();
+                }
                 return node != null;
             }
 
@@ -71,6 +86,15 @@ public class ForwardLinked<T> implements Iterable<T> {
                 return value;
             }
         };
+    }
+
+    public T get(int index) {
+        Objects.checkIndex(index, size);
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.value;
     }
 
     private static class Node<T> {

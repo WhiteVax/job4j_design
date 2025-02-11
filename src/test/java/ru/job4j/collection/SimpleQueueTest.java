@@ -1,12 +1,12 @@
 package ru.job4j.collection;
 
-import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.util.NoSuchElementException;
 
-public class SimpleQueueTest {
+class SimpleQueueTest {
     private SimpleQueue<Integer> queue;
 
     @BeforeEach
@@ -16,25 +16,25 @@ public class SimpleQueueTest {
     }
 
     @Test
-    public void whenPushPoll() {
+    void whenPushPoll() {
         assertThat(queue.poll()).isEqualTo(1);
     }
 
     @Test
-    public void when2PushPoll() {
+    void when2PushPoll() {
         queue.push(2);
         assertThat(queue.poll()).isEqualTo(1);
     }
 
     @Test
-    public void when2PushPollPushPoll() {
+    void when2PushPollPushPoll() {
         queue.poll();
         queue.push(2);
         assertThat(queue.poll()).isEqualTo(2);
     }
 
     @Test
-    public void whenEmptyPoll() {
+    void whenEmptyPoll() {
         SimpleQueue<Integer> queue = new SimpleQueue<>();
         assertThatThrownBy(queue::poll)
                 .isInstanceOf(NoSuchElementException.class)
@@ -42,7 +42,7 @@ public class SimpleQueueTest {
     }
 
     @Test
-    public void when2PushPollPushPollEmpty() {
+    void when2PushPollPushPollEmpty() {
         queue.poll();
         queue.push(2);
         queue.poll();
@@ -52,7 +52,7 @@ public class SimpleQueueTest {
     }
 
     @Test
-    public void whenPushPushPollAndPush() {
+    void whenPushPushPollAndPush() {
         queue.push(2);
         queue.poll();
         queue.push(3);

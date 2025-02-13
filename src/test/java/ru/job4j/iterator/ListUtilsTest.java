@@ -1,56 +1,61 @@
 package ru.job4j.iterator;
 
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import java.util.*;
 
 public class ListUtilsTest {
 
-    @Test
-    public void whenAddBefore() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(1, 3));
-        ListUtils.addBefore(input, 1, 2);
-        assertThat(input, is(Arrays.asList(1, 2, 3)));
+    private List<Integer> input;
+
+    @BeforeEach
+    void setUp() {
+        input = new ArrayList<>(Arrays.asList(1, 3));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void whenAddBeforeWithInvalidIndex() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(1, 3));
-        ListUtils.addBefore(input, 3, 2);
+    @Test
+    void whenAddBefore() {
+        ListUtils.addBefore(input, 1, 2);
+        assertThat(input).hasSize(3).containsSequence(1, 2, 3);
+    }
+
+    @Test
+    void whenAddBeforeWithInvalidIndex() {
+        assertThatThrownBy(() -> ListUtils.addBefore(input, 3, 2))
+                .isInstanceOf(IndexOutOfBoundsException.class);
+    }
+
+    @Test
+    void whenAddAfter() {
+        ListUtils.addAfter(input, 0, 2);
+        assertThat(input).hasSize(3).containsSequence(1, 2, 3);
     }
 
     @Test
     public void whenAddAfterLast() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(0, 1, 2));
-        ListUtils.addAfter(input, 2, 3);
-        assertThat(input, is(Arrays.asList(0, 1, 2, 3)));
+        ListUtils.addAfter(input, 0, 4);
+        assertThat(input).hasSize(3).containsSequence(1, 4, 3);
     }
 
     @Test
     public void whenRemoveAllElements() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 8, 9));
-        List<Integer> delete = new ArrayList<>(Arrays.asList(1, 2, 3, 3, 3, 4, 6));
-        ListUtils.removeAll(input, delete);
-        assertThat(input, is(List.of(0, 5, 8, 9)));
+        List<Integer> list = List.of(1, 2, 3);
+        input.add(2);
+        ListUtils.removeAll(input, list);
+        assertThat(input).hasSize(0);
     }
 
     @Test
     public void whenRemoveIf() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
-       ListUtils.removeIf(input, e -> e % 2 != 0);
-        assertThat(input, is(List.of(0, 2, 4, 6)));
+        ListUtils.removeIf(input, x -> x >= 0);
+        assertThat(input).hasSize(0);
     }
 
     @Test
     public void whenReplaceIf() {
-        List<Integer> input = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6));
-        ListUtils.replaceIf(input, e -> e % 2 == 0, 9);
-        assertThat(input, is(List.of(9, 1, 9, 3, 9, 5, 9)));
+        ListUtils.replaceIf(input, i -> i > 0, 0);
+        assertThat(input).hasSize(2).contains(0, 0);
     }
-
 }

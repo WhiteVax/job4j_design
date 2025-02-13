@@ -1,27 +1,27 @@
 package ru.job4j.set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleSetTest {
 
     @Test
     public void whenAddNonNull() {
         Set<Integer> set = new SimpleSet<>();
-        assertTrue(set.add(1));
-        assertTrue(set.contains(1));
-        assertFalse(set.add(1));
+        assertThat(set.add(1)).isTrue();
+        assertThat(set.contains(1)).isTrue();
+        assertThat(set.add(1)).isFalse();
     }
 
     @Test
     public void whenAddNull() {
         Set<Integer> set = new SimpleSet<>();
-        assertTrue(set.add(null));
-        assertTrue(set.contains(null));
-        assertFalse(set.add(null));
+        assertThat(set.add(null)).isTrue();
+        assertThat(set.contains(null)).isTrue();
+        assertThat(set.add(null)).isFalse();
     }
 
     @Test
@@ -31,9 +31,26 @@ public class SimpleSetTest {
         set.add(2);
         set.add(3);
         Iterator<Integer> iterator = set.iterator();
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         iterator.next();
         iterator.next();
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
+    }
+
+    @Test
+    void whenAddSomeElementsNonNull() {
+        SimpleSet<Integer> set = new SimpleSet<>();
+        assertThat(set.contains(1)).isFalse();
+        assertThat(set.add(1)).isTrue();
+        assertThat(set.contains(1)).isTrue();
+        assertThat(set.add(1)).isFalse();
+        assertThat(set.contains(2)).isFalse();
+        assertThat(set.add(2)).isTrue();
+        assertThat(set.contains(2)).isTrue();
+        assertThat(set.add(2)).isFalse();
+        assertThat(set.contains(3)).isFalse();
+        assertThat(set.add(3)).isTrue();
+        assertThat(set.contains(3)).isTrue();
+        assertThat(set.add(3)).isFalse();
     }
 }

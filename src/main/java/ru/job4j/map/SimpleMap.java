@@ -35,11 +35,11 @@ public class SimpleMap<K, V> implements Map<K, V> {
     }
 
     private int indexFor(int has) {
-        return  hash(has) & (capacity - 1);
+        return hash(has) & (capacity - 1);
     }
 
     private void expend() {
-        capacity = capacity<< 1;
+        capacity = capacity << 1;
         MapEntry<K, V>[] newTable = new MapEntry[capacity];
         for (MapEntry<K, V> entry : table) {
             if (entry != null) {
@@ -63,8 +63,8 @@ public class SimpleMap<K, V> implements Map<K, V> {
     private boolean keyEqual(MapEntry<K, V> entry, K key) {
         boolean result = false;
         if (entry != null) {
-            result = Objects.hashCode(entry.key) == Objects.hashCode(key) &&
-                    Objects.equals(entry.key, key);
+            result = Objects.hashCode(entry.key) == Objects.hashCode(key)
+                    && Objects.equals(entry.key, key);
         }
         return result;
     }

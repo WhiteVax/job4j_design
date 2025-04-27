@@ -17,8 +17,7 @@ public class Config {
     public void load() {
         try (var reader = new BufferedReader(new FileReader(this.path))) {
             reader.lines()
-                    .filter(e -> !e.matches("^#+.*"))
-                    .filter(e -> !e.isEmpty())
+                    .filter(e -> !e.isEmpty() && !e.matches("^#+.*"))
                     .forEach(e -> {
                         String[] s = e.split("=", 2);
                         if (s.length != 2 || s[0].isEmpty() || s[1].isEmpty()) {

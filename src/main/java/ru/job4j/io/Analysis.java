@@ -8,8 +8,9 @@ import java.io.FileReader;
 
 public class Analysis {
     public void unavailable(String source, String target) throws IOException {
-        try (var writer = new PrintWriter(new FileOutputStream(target))) {
-            var reader = new BufferedReader(new FileReader(source));
+        try (var writer = new PrintWriter(new FileOutputStream(target));
+             var reader = new BufferedReader(new FileReader(source));
+        ) {
             var server = true;
             while (reader.ready()) {
                 var line = reader.readLine();

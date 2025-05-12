@@ -1,53 +1,121 @@
 package ru.job4j.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.*;
 
 public class ArgsNameTest {
-
     @Test
-    public void whenGetFirst() {
-        var jvm = ArgsName.of(new String[] {"-Xmx=512", "-encoding=UTF-8"});
-        assertThat(jvm.get("Xmx"), is("512"));
-    }
-
-    @Test
-    public void whenGetFirstReorder() {
-        var jvm = ArgsName.of(new String[] {"-encoding=UTF-8", "-Xmx=512"});
-        assertThat(jvm.get("Xmx"), is("512"));
+    void whenGetFirst() {
+        ArgsName jvm = ArgsName.of(new String[]{"-Xmx=512", "-encoding=UTF-8"});
+        assertThat(jvm.get("Xmx")).isEqualTo("512");
     }
 
     @Test
-    public void whenMultipleEqualsSymbol() {
-        var jvm = ArgsName.of(new String[] {"-request=?msg=Exit="});
-        assertThat(jvm.get("request"), is("?msg=Exit="));
+    void whenGetFirstReorder() {
+        ArgsName jvm = ArgsName.of(new String[]{"-encoding=UTF-8", "-Xmx=512"});
+        assertThat(jvm.get("Xmx")).isEqualTo("512");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenGetNotExist() {
-        var jvm = ArgsName.of(new String[] {"-Xmx=512"});
-        jvm.get("Xms");
+    @Test
+    void whenMultipleEqualsSymbol() {
+        ArgsName jvm = ArgsName.of(new String[]{"-request=?msg=Exit="});
+        assertThat(jvm.get("request")).isEqualTo("?msg=Exit=");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenWrongSomeArgument() {
-        var jvm = ArgsName.of(new String[] {"-encoding=UTF-8", "-Xmx="});
+    @Test
+    void whenKeyNotExist() {
+        ArgsName jvm = ArgsName.of(new String[]{"-Xmx=512"});
+        assertThatThrownBy(() -> jvm.get("Xms")).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("This key: 'Xms' is missing");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenArrayIsEmpty() {
-        var jvm = ArgsName.of(new String[]{});
+    @Test
+    void whenWrongSomeArgument() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Arguments not passed to program");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenWithoutSymbolDash() {
-        var jvm = ArgsName.of(new String[] {"encoding=UTF-8", "-Xmx="});
+    @Test
+    void whenStringDoesNotContainKeyThenExceptionThrown() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "-=?msg=Exit="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-=?msg=Exit=' does not contain a key");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenWithoutSymbolEquals() {
-        var jvm = ArgsName.of(new String[] {"-encoding UTF-8", "-Xmx "});
+    @Test
+    void whenStringDoesNotContainKeyThenExceptionThrown2() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "-=?msg=Hello="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-=?msg=Hello=' does not contain a key");
+    }
+
+    @Test
+    void whenStringDoesNotContainValueThenExceptionThrown() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "-request="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-request=' does not contain a value");
+    }
+
+    @Test
+    void whenStringDoesNotContainValueThenExceptionThrown2() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "-encoding="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-encoding=' does not contain a value");
+    }
+
+    @Test
+    void whenThereNoEqualSignThenExceptionThrown() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "-request?msgHello"}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-request?msgHello' does not contain an equal sign");
+    }
+
+    @Test
+    void whenNoHyphenPrefixThenExceptionThrown() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-Xmx=512", "request=?msg=Exit="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument 'request=?msg=Exit=' does not start with a '-' character");
+    }
+
+    @Test
+    void whenStringDoesNotContainKeyThenExceptionThrown3() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-SRT=512", "-=ok"}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-=ok' does not contain a key");
+    }
+
+    @Test
+    void whenStringDoesNotContainValueThenExceptionThrown3() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-java=100", "-start="}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-start=' does not contain a value");
+    }
+
+    @Test
+    void whenThereNoEqualSignThenExceptionThrown2() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-XML:512", "-request=msgOK"}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument '-XML:512' does not contain an equal sign");
+    }
+
+    @Test
+    void whenNoHyphenPrefixThenExceptionThrown2() {
+        assertThatThrownBy(() -> ArgsName.of(new String[]{"-xml=100", "request=Exit"}))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("^.+")
+                .hasMessageContaining("Error: This argument 'request=Exit' does not start with a '-' character");
     }
 }

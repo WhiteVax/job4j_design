@@ -9,7 +9,7 @@ public class ArgsName {
 
     public String get(String key) {
         if (!values.containsKey(key)) {
-            throw new IllegalArgumentException(String.format("The container doesn't contain such a key - %s.", key));
+            throw new IllegalArgumentException("This key: '" + key + "' is missing");
         }
         return values.get(key);
     }
@@ -23,25 +23,26 @@ public class ArgsName {
     }
 
     private void validate(String line) {
-        if (!line.matches("(-{1}.+={1}.+)")) {
-            throw new IllegalArgumentException(String.format("Wrong format %s.", line));
+        if (!line.contains("=")) {
+            throw new IllegalArgumentException("Error: This argument '" + line + "' does not contain an equal sign");
+        }
+        if (!line.startsWith("-")) {
+            throw new IllegalArgumentException("Error: This argument '" + line + "' does not start with a '-' character");
+        }
+        if (line.startsWith("-") && line.indexOf("=") == 1) {
+            throw new IllegalArgumentException("Error: This argument '" + line + "' does not contain a key");
+        }
+        if (line.indexOf("=") == line.length() - 1) {
+            throw new IllegalArgumentException("Error: This argument '" + line + "' does not contain a value");
         }
     }
 
     public static ArgsName of(String[] args) {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Empty args.");
+            throw new IllegalArgumentException("Arguments not passed to program");
         }
         var names = new ArgsName();
         names.parse(args);
         return names;
-    }
-
-    public static void main(String[] args) {
-        var jvm = ArgsName.of(new String[]{"-Xmx=512", "-encoding=UTF-8"});
-        System.out.println(jvm.get("Xmx"));
-
-        var zip = ArgsName.of(new String[]{"-out=project.zip", "-encoding=UTF-8"});
-        System.out.println(zip.get("out"));
     }
 }

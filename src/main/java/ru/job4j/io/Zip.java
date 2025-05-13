@@ -12,14 +12,25 @@ import java.util.zip.ZipOutputStream;
 public class Zip {
 
     public void packFiles(List<Path> sources, File target) {
-        try (var zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)))) {
-            for (var file : sources) {
-                zip.putNextEntry(new ZipEntry(file.toString()));
-                try (var out = new BufferedInputStream(new FileInputStream(file.toFile()))) {
+        try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)))) {
+            for (Path source : sources) {
+                zip.putNextEntry(new ZipEntry(source.toString()));
+                try (var out = new BufferedInputStream(new FileInputStream(source.toFile()))) {
                     zip.write(out.readAllBytes());
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void packSingleFile(File source, File target) {
+        try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)))) {
+            zip.putNextEntry(new ZipEntry(source.getPath()));
+            try (BufferedInputStream output = new BufferedInputStream(new FileInputStream(source))) {
+                zip.write(output.readAllBytes());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +52,7 @@ public class Zip {
             throw new IllegalArgumentException(String.format("Wrong arg -d %s.", args[0]));
         } else if (!Files.exists(Path.of(argName.get("e").substring(1, 1)))) {
             throw new IllegalArgumentException(String.format("Wrong arg -e %s", args[1]));
-        } else if (!Files.exists(Path.of(argName.get("o")))) {
+        } else if (!args[2].matches("(^-o={1}\\w+.*.zip)")) {
             throw new IllegalArgumentException(String.format("Wrong arg -o %s", args[2]));
         }
     }
@@ -51,5 +62,9 @@ public class Zip {
         var arg = ArgsName.of(args);
         zip.checkValidate(args, arg);
         zip.packFiles(zip.convertToList(arg.get("d"), arg.get("e")), new File(arg.get("o")));
+
+        zip.packSingleFile(
+                new File("./pom.xml"),
+                new File("./pom.zip"));
     }
 }

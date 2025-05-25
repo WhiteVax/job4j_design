@@ -8,9 +8,9 @@ import java.util.*;
 
 public class CSVReader {
 
-    private static final Map<String, Integer> headerIndexMap = new HashMap<>();
-    private static final List<String[]> rows = new ArrayList<>();
-    private static final List<String> resultLines = new ArrayList<>();
+    private static Map<String, Integer> headerIndexMap = new HashMap<>();
+    private static List<String[]> rows = new ArrayList<>();
+    private static List<String> resultLines = new ArrayList<>();
 
     public static void handle(ArgsName args) {
         clearState();

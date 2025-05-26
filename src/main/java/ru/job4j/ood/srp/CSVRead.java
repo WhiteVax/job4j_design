@@ -87,7 +87,7 @@ public class CSVRead {
 
     public static void main(String[] args) throws Exception {
         var arg = ArgsName.of(args);
-        var reader = new ru.job4j.io.CSVReader();
+        var reader = new CSVRead();
         reader.handle(arg);
     }
 }

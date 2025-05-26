@@ -13,28 +13,46 @@ public class EchoServer {
     public static void main(String[] args) {
         try (var server = new ServerSocket(9000)) {
             while (!server.isClosed()) {
-                var socket = server.accept();
-                try (var out = socket.getOutputStream();
-                     var in = new BufferedReader(
-                             new InputStreamReader(socket.getInputStream()))) {
+                try (var socket = server.accept();
+                     var out = socket.getOutputStream();
+                     var in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
-                    String[] string = in.readLine().split("\\s");
-                    if (string[1].contains("msg=")) {
-                        var msg = string[1].replaceAll("(\\/\\?)", "");
-                        if ("msg=hello".equalsIgnoreCase(msg)) {
-                            System.out.printf("%s > Hello.\r\n", msg);
-                        } else if ("msg=exit".equalsIgnoreCase(msg)) {
-                            System.out.printf("%s > Завершить работу.\r\n", msg);
-                            server.close();
-                        } else {
-                            System.out.printf("%s > What?\r\n", msg);
-                        }
+                    String requestLine = in.readLine();
+                    if (requestLine == null || requestLine.isBlank()) {
+                        continue;
                     }
+
+                    String[] parts = requestLine.split("\\s");
+                    if (parts.length < 2) {
+                        continue;
+                    }
+
+                    String path = parts[1];
+                    String message = extractMessage(path);
+
+                    if ("hello".equalsIgnoreCase(message)) {
+                        System.out.println("msg=hello > Hello.");
+                    } else if ("Bye".equalsIgnoreCase(message)) {
+                        System.out.println("msg=Bye > Завершить работу.");
+                        server.close();
+                    } else if (!message.isEmpty()) {
+                        System.out.printf("msg=%s > What?\r\n", message);
+                    }
+
                     out.flush();
                 }
             }
         } catch (IOException e) {
             LOG.error("Error IO", e);
         }
+    }
+
+
+    private static String extractMessage(String path) {
+        int index = path.indexOf("msg=");
+        if (index == -1) {
+            return "";
+        }
+        return path.substring(index + 4).split("&")[0];
     }
 }

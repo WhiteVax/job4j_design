@@ -30,15 +30,14 @@ public class EchoServer {
                     String path = parts[1];
                     String message = extractMessage(path);
 
-                    if ("hello".equalsIgnoreCase(message)) {
+                    if ("Hello".equalsIgnoreCase(message)) {
                         System.out.println("msg=hello > Hello.");
-                    } else if ("Bye".equalsIgnoreCase(message)) {
-                        System.out.println("msg=Bye > Завершить работу.");
+                    } else if ("Exit".equalsIgnoreCase(message)) {
+                        System.out.println("msg=Exit > Завершить работу.");
                         server.close();
                     } else if (!message.isEmpty()) {
                         System.out.printf("msg=%s > What?\r\n", message);
                     }
-
                     out.flush();
                 }
             }

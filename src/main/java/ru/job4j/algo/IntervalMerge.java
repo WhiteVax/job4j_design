@@ -23,7 +23,7 @@ public class IntervalMerge {
     private void shortArray(int[][] intervals) {
         for (int i = 1; i < intervals.length; i++) {
             if (intervals[i - 1][1] > intervals[i][1]) {
-                int [] temp = intervals[i - 1];
+                int[] temp = intervals[i - 1];
                 intervals[i - 1] = intervals[i];
                 intervals[i] = temp;
             }

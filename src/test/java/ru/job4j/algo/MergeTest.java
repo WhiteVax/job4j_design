@@ -1,6 +1,7 @@
 package ru.job4j.algo;
 
 import org.junit.jupiter.api.Test;
+import ru.job4j.algo.sort.Merge;
 
 import static org.assertj.core.api.Assertions.*;
 

@@ -1,6 +1,8 @@
 package ru.job4j.algo;
 
 import org.junit.jupiter.api.Test;
+import ru.job4j.algo.sort.IntervalMerge;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class IntervalMergeTest {

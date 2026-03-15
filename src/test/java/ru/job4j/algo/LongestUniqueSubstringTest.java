@@ -1,6 +1,8 @@
 package ru.job4j.algo;
 
 import org.junit.Test;
+import ru.job4j.algo.hash.LongestUniqueSubstring;
+
 import static org.assertj.core.api.Assertions.*;
 
 public class LongestUniqueSubstringTest {

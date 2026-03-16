@@ -24,8 +24,7 @@ public class Main {
             return new int[]{-1, -1};
         }
         intervals.sort(Comparator.comparingInt(o -> o.start));
-        PriorityQueue<Interval> activeIntervals =
-                new PriorityQueue<>(Comparator.comparingInt(i -> i.end));
+        PriorityQueue<Interval> activeIntervals = new PriorityQueue<>(Comparator.comparingInt(i -> i.end));
 
         int maxOverlap = 0;
         int maxStart = -1;
@@ -38,15 +37,13 @@ public class Main {
             }
 
             activeIntervals.add(interval);
-            if(activeIntervals.size() > maxOverlap) {
+            if (activeIntervals.size() > maxOverlap) {
                 maxOverlap = activeIntervals.size();
                 maxEnd = activeIntervals.peek().end;
                 maxStart = interval.start;
             }
         }
-        return new int[]{
-                maxStart, maxEnd
-        };
+        return new int[]{maxStart, maxEnd};
     }
 
     public static void main(String[] args) {

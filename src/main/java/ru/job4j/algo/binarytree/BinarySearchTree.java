@@ -10,7 +10,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
     public boolean put(T key) {
         boolean result;
-        if (Objects.isNull(root)) {
+        if (root == null) {
             root = new Node(key);
             result = true;
         } else {
@@ -62,8 +62,74 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public boolean remove(T key) {
-        /* Метод будет реализован в следующих уроках */
-        return false;
+        boolean result = false;
+        if (key != null && root != null) {
+            result = remove(root, key);
+        }
+        return result;
+    }
+
+    private boolean remove(Node source, T key) {
+        boolean result = true;
+        Node current = source;
+        Node parent = source;
+        boolean isLeft = true;
+        while (result && !Objects.equals(current.key, key)) {
+            parent = current;
+            int cmp = key.compareTo(current.key);
+            if (cmp < 0) {
+                isLeft = true;
+                current = current.left;
+            } else if (cmp > 0) {
+                isLeft = false;
+                current = current.right;
+            }
+            if (current == null) {
+                result = false;
+            }
+        }
+        if (result) {
+            if (current.left == null && current.right == null) {
+                swap(isLeft, source, parent, current, null);
+            } else if (current.left != null && current.right == null) {
+                swap(isLeft, source, parent, current, current.left);
+            } else if (current.left == null) {
+                swap(isLeft, source, parent, current, current.right);
+            } else {
+                Node heir = getHeir(current);
+                swap(isLeft, source, parent, current, heir);
+                heir.left = current.left;
+            }
+            current.right = null;
+            current.left = null;
+        }
+        return result;
+    }
+
+    private void swap(boolean isLeft, Node source, Node parent, Node current, Node equal) {
+        if (Objects.equals(current, source)) {
+            root = equal;
+        } else if (isLeft) {
+            parent.left = equal;
+        } else {
+            parent.right = equal;
+        }
+    }
+
+    private Node getHeir(Node delNode) {
+        Node nodeParent = delNode;
+        Node node = delNode;
+        Node current = delNode.right;
+        while (current != null) {
+            nodeParent = node;
+            node = current;
+            current = current.left;
+        }
+        if (node != delNode.right) {
+            nodeParent.left = node.right;
+            node.right = delNode.right;
+        }
+        return node;
     }
 
     public List<T> inSymmetricalOrder() {
@@ -112,7 +178,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public T minimum() {
-        return Objects.nonNull(root) ? minimum(root).key : null;
+        return root != null ? minimum(root).key : null;
     }
 
     private Node minimum(Node node) {
@@ -123,7 +189,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public T maximum() {
-        return Objects.nonNull(root) ? maximum(root).key : null;
+        return root != null ? maximum(root).key : null;
     }
 
     private Node maximum(Node node) {

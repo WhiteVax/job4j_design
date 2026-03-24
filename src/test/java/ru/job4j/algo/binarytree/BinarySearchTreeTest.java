@@ -97,4 +97,35 @@ class BinarySearchTreeTest {
         assertThat(tree.inPostOrder()).hasSize(7)
                 .containsExactly(1, 3, 2, 5, 7, 6, 4);
     }
+
+    @Test
+    void whenRemoveNullThenFalse() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        boolean result = tree.remove(null);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void whenBSTNullThenFalse() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        boolean result = tree.remove(3);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void whenBSTRemoveSomeElementsAndCheckBSTThenTrue() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        tree.put(3);
+        tree.put(4);
+        tree.put(5);
+        tree.put(6);
+        tree.put(7);
+        assertThat(tree.remove(3)).isTrue();
+        assertThat(tree.remove(5)).isTrue();
+        assertThat(tree.remove(6)).isTrue();
+        assertThat(tree.contains(3)).isFalse();
+        assertThat(tree.minimum()).isEqualTo(4);
+        assertThat(tree.maximum()).isEqualTo(7);
+        assertThat(tree.inPostOrder()).hasSize(2);
+    }
 }

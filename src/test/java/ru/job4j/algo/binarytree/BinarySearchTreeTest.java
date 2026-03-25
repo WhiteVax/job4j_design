@@ -123,9 +123,33 @@ class BinarySearchTreeTest {
         assertThat(tree.remove(3)).isTrue();
         assertThat(tree.remove(5)).isTrue();
         assertThat(tree.remove(6)).isTrue();
+        tree.put(1);
+        assertThat(tree.contains(1)).isTrue();
         assertThat(tree.contains(3)).isFalse();
-        assertThat(tree.minimum()).isEqualTo(4);
+        assertThat(tree.minimum()).isEqualTo(1);
         assertThat(tree.maximum()).isEqualTo(7);
-        assertThat(tree.inPostOrder()).hasSize(2);
+        assertThat(tree.inPostOrder()).hasSize(3);
+    }
+
+
+    @Test
+    void whenBSTClearThenTrue() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        tree.put(3);
+        tree.put(4);
+        tree.put(5);
+        tree.put(6);
+        tree.clear();
+        assertThat(tree.inPostOrder()).isEmpty();
+    }
+
+    @Test
+    void whenBSTAddClearAddThenTrue() {
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+        tree.put(3);
+        tree.put(6);
+        tree.clear();
+        tree.put(3);
+        assertThat(tree.contains(3)).isTrue();
     }
 }

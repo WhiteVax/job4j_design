@@ -172,7 +172,9 @@ public class BinarySearchTree<T extends Comparable<T>> {
         if (localRoot != null) {
             inPostOrder(localRoot.left, list);
             inPostOrder(localRoot.right, list);
-            list.add(localRoot.key);
+            if (localRoot.key != null) {
+                list.add(localRoot.key);
+            }
         }
         return list;
     }
@@ -197,6 +199,22 @@ public class BinarySearchTree<T extends Comparable<T>> {
             return node;
         }
         return maximum(node.right);
+    }
+
+    public void clear() {
+        Node node = root;
+        clear(node);
+        root =  null;
+    }
+
+    private void clear(Node first) {
+        if (first != null) {
+            clear(first.left);
+            clear(first.right);
+            first.left = null;
+            first.right  = null;
+            first.key = null;
+        }
     }
 
     @Override

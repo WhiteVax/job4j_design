@@ -16,4 +16,5 @@ public interface Store {
     boolean check(Food food);
     boolean add(Food food);
     List<Food> getList();
+    void clear();
 }

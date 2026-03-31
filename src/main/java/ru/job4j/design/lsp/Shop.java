@@ -37,6 +37,11 @@ public class Shop implements Store {
         return new ArrayList<>(list);
     }
 
+    @Override
+    public void clear() {
+        list.clear();
+    }
+
     public void setPrice(Food food) {
         food.setPrice(food.getPrice() * (1 - (food.getDiscount() / 100)));
     }

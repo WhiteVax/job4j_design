@@ -29,4 +29,28 @@ public class ControlQualityTest {
         assertThat(warehouse.getList()).isEqualTo(List.of(sprite));
         assertThat(trash.getList()).isEqualTo(List.of(bread));
     }
+
+    @Test
+   public void whenResortThenFoodRedistributedCorrectly() {
+        LocalDate now = LocalDate.now();
+        Food food = new Food("Milk", now.plusDays(10), now.minusDays(1), 100, 10);
+        Store warehouse = new Warehouse();
+        Store shop = new Shop();
+        Store trash = new Trash();
+
+        ControlQuality control = new ControlQuality(List.of(warehouse, shop, trash));
+        control.addFoods(List.of(food));
+        assertThat(warehouse.getList()).contains(food);
+
+        food.setExpireDate(now.plusDays(2));
+        control.resort();
+        assertThat(shop.getList()).contains(food);
+        assertThat(warehouse.getList()).isEmpty();
+
+        food.setExpireDate(now.minusDays(1));
+        control.resort();
+        assertThat(trash.getList()).contains(food);
+        assertThat(shop.getList()).isEmpty();
+        assertThat(warehouse.getList()).isEmpty();
+    }
 }

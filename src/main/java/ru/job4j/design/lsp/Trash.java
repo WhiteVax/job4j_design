@@ -30,4 +30,9 @@ public class Trash implements Store {
     public List<Food> getList() {
         return new ArrayList<>(list);
     }
+
+    @Override
+    public void clear() {
+        list.clear();
+    }
 }
